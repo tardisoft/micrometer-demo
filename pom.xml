@@ -85,10 +85,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>3.0.1</version>
@@ -206,5 +202,18 @@
 			</properties>
 		</profile>
 	</profiles>
+
+	<distributionManagement>
+		<repository>
+			<id>artifactory-local</id>
+			<name>artifactory-local</name>
+			<url>http://artifactory:8081/artifactory/tardisoft-repo</url>
+		</repository>
+		<snapshotRepository>
+			<id>artifactory-local</id>
+			<name>artifactory-local</name>
+			<url>http://artifactory:8081/artifactory/tardisoft-repo</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
