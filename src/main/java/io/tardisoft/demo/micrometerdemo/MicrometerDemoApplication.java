@@ -3,7 +3,8 @@ package io.tardisoft.demo.micrometerdemo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
@@ -15,9 +16,18 @@ public class MicrometerDemoApplication {
         SpringApplication.run(MicrometerDemoApplication.class, args);
     }
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public Mono<ResponseEntity<String>> index() {
-        return Mono.just(ResponseEntity.ok("Hello World"));
+        return Mono.just(ResponseEntity.ok("Index"));
     }
 
+    @GetMapping(value = "/hello")
+    public Mono<ResponseEntity<String>> hello() {
+        return Mono.just(ResponseEntity.ok("Hello"));
+    }
+
+    @GetMapping(value = "/hello/{name}")
+    public Mono<ResponseEntity<String>> hello(@PathVariable("name") String name) {
+        return Mono.just(ResponseEntity.ok("Hello " + name));
+    }
 }
