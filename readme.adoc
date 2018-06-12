@@ -1,0 +1,7 @@
+# Micrometer Demo
+
+Demo repo for building with Jenkins Pipeline and for metrics stuff
+
+## Documentation
+
+Auto generated/published https://tardisoft.github.io/micrometer-demo/[Documentation] on gh-pages branch.
