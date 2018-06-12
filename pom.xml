@@ -26,6 +26,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<github.repositoryOwner>tardisoft</github.repositoryOwner>
+		<github.repositoryName>${project.artifactId}</github.repositoryName>
+		<github.global.server>github</github.global.server>
+		<asciidoctor-maven-plugin.version>1.5.6</asciidoctor-maven-plugin.version>
+		<asciidoctorj.version>1.5.6</asciidoctorj.version>
+		<asciidoctorj.diagram.version>1.5.4.1</asciidoctorj.diagram.version>
+		<asciidoclet.version>1.5.4</asciidoclet.version>
+		<documentation.input.dir>${project.basedir}/documentation</documentation.input.dir>
+		<documentation.output.dir>${project.build.directory}/site</documentation.output.dir>
+		<documentation.snippets.dir>${project.build.directory}/snippets</documentation.snippets.dir>
+		<documentation.images.dir>images</documentation.images.dir>
+		<asciidoc.overview.path>src/main/java/overview.adoc</asciidoc.overview.path>
+		<jruby.version>1.7.26</jruby.version>
 	</properties>
 
 	<dependencies>
@@ -34,12 +47,16 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-statsd</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
@@ -50,6 +67,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -72,6 +94,11 @@
 
 	<build>
 		<plugins>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>${asciidoctor-maven-plugin.version}</version>
+            </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -200,6 +227,118 @@
 			<properties>
 				<argLine>-Xmx3096M</argLine>
 			</properties>
+		</profile>
+		<profile>
+			<id>asciidoc-github-page</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<source>1.8</source>
+							<doclet>org.asciidoctor.Asciidoclet</doclet>
+							<docletArtifact>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoclet</artifactId>
+								<version>${asciidoclet.version}</version>
+							</docletArtifact>
+							<overview>${asciidoc.overview.path}</overview>
+							<additionalparam>
+								--base-dir ${project.basedir}
+								--attribute "name=${project.name}"
+								--attribute "version=${project.version}"
+								--attribute
+								"title-link=http://github.coptum.com/pages/cirrus-apps/${project.name}[${project.name}
+								${project.version}]"
+							</additionalparam>
+						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-site-plugin</artifactId>
+						<configuration>
+							<outputDirectory>${project.build.directory}/site/maven-site</outputDirectory>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>generate-docs</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+								<configuration>
+									<backend>html</backend>
+									<doctype>book</doctype>
+								</configuration>
+							</execution>
+						</executions>
+						<configuration>
+							<sourceDirectory>${documentation.input.dir}</sourceDirectory>
+							<sourceDocumentName>index.adoc</sourceDocumentName>
+							<outputDirectory>${documentation.output.dir}</outputDirectory>
+							<sourceHighlighter>highlightjs</sourceHighlighter>
+							<backend>html5</backend>
+							<doctype>book</doctype>
+							<attributes>
+								<icons>font</icons>
+								<toc>left</toc>
+								<version>${project.version}</version>
+								<highlightjsTheme>darcula</highlightjsTheme>
+								<imagesdir>${documentation.images.dir}</imagesdir>
+								<snippets>${documentation.snippets.dir}</snippets>
+							</attributes>
+							<requires>
+								<require>asciidoctor-diagram</require>
+							</requires>
+						</configuration>
+						<dependencies>
+							<!-- Comment this section to use the default jruby artifact provided by the plugin -->
+							<dependency>
+								<groupId>org.jruby</groupId>
+								<artifactId>jruby-complete</artifactId>
+								<version>${jruby.version}</version>
+							</dependency>
+							<!-- Comment this section to use the default AsciidoctorJ artifact provided by the plugin -->
+							<dependency>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoctorj</artifactId>
+								<version>${asciidoctorj.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoctorj-diagram</artifactId>
+								<version>${asciidoctorj.diagram.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoclet</artifactId>
+								<version>${asciidoclet.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+					<plugin>
+						<groupId>com.optum.cirrus.github</groupId>
+						<artifactId>site-maven-plugin</artifactId>
+						<configuration>
+							<message>Refactor: Creating site for ${project.version}</message>
+							<excludes>
+								<exclude>jacoco/**</exclude>
+								<exclude>checkstyle.*</exclude>
+								<exclude>codenarc.*</exclude>
+							</excludes>
+							<host>github.optum.com</host>
+							<server>github</server>
+							<repositoryOwner>${github.repositoryOwner}</repositoryOwner>
+							<repositoryName>${github.repositoryName}</repositoryName>
+							<callsPerMinute>1000</callsPerMinute>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 

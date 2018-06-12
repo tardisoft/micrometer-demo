@@ -3,4 +3,5 @@
 import java.lang.Object
 
 buildApplication {
+    deploySite = true
 }

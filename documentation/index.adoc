@@ -1,0 +1,43 @@
+= Micrometer Demo
+Christian Oestreich
+:imagesdir: ./
+:sourcedir: ../src/main/java
+:testdir: ../src/test/java
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:highlightjs-theme: darcula
+:numbered:
+:toc:
+:toclevels: 4
+:sectlinks:
+
+== Maven Docs
+
+Maven site which includes dependency and plugin version and information for the current pom is located at link:maven-site/index.html[Maven Docs]
+
+== Presentation Profit Center
+
+[plantuml]
+----
+box "Gnometopia" #LightBlue
+	actor gnome
+	participant gnome
+end box
+box "Profit Center" #LightGreen
+	gnome -> underpants : steal
+	activate underpants
+	underpants -> unknown : unknown
+	activate unknown
+	profit <-- unknown : obviously
+	deactivate unknown
+	deactivate underpants
+end box
+----
+
+== Application Code
+
+[source, java]
+----
+include::{sourcedir}/io/tardisoft/demo/micrometerdemo/MicrometerDemoApplication.java[]
+----
